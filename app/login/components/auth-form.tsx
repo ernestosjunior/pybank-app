@@ -15,6 +15,8 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    console.log(formData.get("email"))
 
     setTimeout(() => {
       setIsLoading(false);
@@ -24,13 +26,14 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={onSubmit}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
+        <div className="grid gap-8">
+          <div className="grid gap-4">
             <Label className="sr-only" htmlFor="email">
               E-mail
             </Label>
             <Input
               id="email"
+              name="email"
               placeholder="e-mail"
               type="email"
               autoCapitalize="none"
@@ -38,15 +41,16 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
               autoCorrect="off"
               disabled={isLoading}
             />
-            <Label className="sr-only" htmlFor="email">
+            <Label className="sr-only" htmlFor="password">
               Senha
             </Label>
             <Input
-              id="email"
+              id="password"
+              name="password"
               placeholder="senha"
-              type="email"
+              type="password"
               autoCapitalize="none"
-              autoComplete="email"
+              autoComplete="off"
               autoCorrect="off"
               disabled={isLoading}
             />
