@@ -18,7 +18,7 @@ export function Transactions({
             <div className="flex items-center">
               <Avatar className="h-9 w-9">
                 <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                <AvatarFallback>{isCredit ? "C" : "D"}</AvatarFallback>
+                <AvatarFallback>{isCredit ? "D" : "S"}</AvatarFallback>
               </Avatar>
               <div className="ml-4 space-y-1">
                 <p className="text-sm font-medium leading-none">
@@ -28,7 +28,9 @@ export function Transactions({
                   {format(new Date(created_at), "dd/MM/yyyy")}
                 </p>
               </div>
-              <div className="ml-auto font-medium">{numberToCurrency(value)}</div>
+              <div className="ml-auto font-medium">
+                {numberToCurrency(value)}
+              </div>
             </div>
           );
         })

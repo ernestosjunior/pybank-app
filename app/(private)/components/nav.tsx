@@ -1,26 +1,19 @@
-
 import { cn } from "@/lib/utils";
+import { Dispatch, SetStateAction } from "react";
+import { DialogAction } from "./dialog-action";
 
-export function Nav({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+interface NavProps extends React.HTMLAttributes<HTMLElement> {
+  setTransition: Dispatch<SetStateAction<boolean>>;
+}
+
+export function Nav({ className, setTransition, ...props }: NavProps) {
   return (
     <nav
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
-      <button
-        
-        className="text-sm font-medium transition-colors hover:text-primary"
-      >
-        Depositar
-      </button>
-      <button
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Sacar
-      </button>
+      <DialogAction variant="credit" setTransition={setTransition} />
+      <DialogAction variant="debit" setTransition={setTransition} />
     </nav>
   );
 }

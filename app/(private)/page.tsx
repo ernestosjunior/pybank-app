@@ -13,6 +13,7 @@ import { UserNav } from "./components/user-nav";
 
 export default function DashboardPage() {
   const [account, setAccount] = useState<Account>({} as Account);
+  const [transition, setTransition] = useState(false)
 
   async function getBalance() {
     try {
@@ -30,7 +31,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     getBalance();
-  }, []);
+  }, [transition]);
 
   const credits = account?.transactions?.filter((line) => line?.value > 0);
   const debits = account?.transactions?.length - credits?.length;
@@ -40,8 +41,8 @@ export default function DashboardPage() {
       <div className="flex-col">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
-            <h1 className="text-3xl font-bold tracking-tight">PyBank</h1>
-            <Nav className="mx-6" />
+            <h1 className="text-3xl lg-max:text-xl font-bold tracking-tight">PyBank</h1>
+            <Nav className="mx-6" setTransition={setTransition}/>
             <div className="ml-auto flex items-center space-x-4">
               <UserNav />
             </div>
@@ -151,7 +152,7 @@ export default function DashboardPage() {
                     <CardTitle>Transações</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Transactions transactions={account?.transactions?.reverse()} />
+                    <Transactions transactions={account?.transactions} />
                   </CardContent>
                 </Card>
               </div>
