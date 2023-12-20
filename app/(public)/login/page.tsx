@@ -11,7 +11,7 @@ export default function AuthenticationPage() {
       <div className="container relative h-[100dvh] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 px-0">
         <div className="relative h-full lg-max:h-auto flex-col lg:bg-muted p-10 text-white dark:border-r lg:flex">
           <div className="absolute inset-0 lg-max:hidden bg-zinc-900" />
-          <div className="relative z-20 flex items-center text-lg font-medium lg-max:text-zinc-900">
+          <div className="relative z-20 flex items-center text-3xl font-bold tracking-tight lg-max:text-zinc-900">
             PyBank
           </div>
         </div>

@@ -1,51 +1,59 @@
-import { Metadata } from "next";
+"use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { getAPIClient } from "@/lib/api";
+import { Account } from "@/lib/types/account.type";
+import { numberToCurrency } from "@/utils/numberToCurrency";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Nav } from "./components/nav";
+import { Transactions } from "./components/transactions";
 import { UserNav } from "./components/user-nav";
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Example dashboard app built using the components.",
-};
-
 export default function DashboardPage() {
+  const [account, setAccount] = useState<Account>({} as Account);
+
+  async function getBalance() {
+    try {
+      const fetcher = await getAPIClient();
+
+      const { data, status } = await fetcher.get("/account");
+
+      if (status === 200) {
+        setAccount(data);
+      }
+    } catch (error) {
+      return toast.error("Erro ao obter as informações da conta.");
+    }
+  }
+
+  useEffect(() => {
+    getBalance();
+  }, []);
+
+  const credits = account?.transactions?.filter((line) => line?.value > 0);
+  const debits = account?.transactions?.length - credits?.length;
+
   return (
     <>
       <div className="flex-col">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
+            <h1 className="text-3xl font-bold tracking-tight">PyBank</h1>
+            <Nav className="mx-6" />
             <div className="ml-auto flex items-center space-x-4">
               <UserNav />
             </div>
           </div>
         </div>
-        {/* <div className="flex-1 space-y-4 p-8 pt-6">
-          <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-            <div className="flex items-center space-x-2">
-              <CalendarDateRangePicker />
-              <Button>Download</Button>
-            </div>
-          </div>
+        <div className="flex-1 space-y-4 p-8 pt-6">
           <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics" disabled>
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="reports" disabled>
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value="notifications" disabled>
-                Notifications
-              </TabsTrigger>
-            </TabsList>
             <TabsContent value="overview" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Total Revenue
-                    </CardTitle>
+                    <CardTitle className="text-sm font-medium">Saldo</CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -60,16 +68,15 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
-                    <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
-                    </p>
+                    <div className="text-2xl font-bold">
+                      {numberToCurrency(account?.balance ?? 0)}
+                    </div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Subscriptions
+                      Depósitos
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -87,15 +94,14 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+2350</div>
-                    <p className="text-xs text-muted-foreground">
-                      +180.1% from last month
-                    </p>
+                    <div className="text-2xl font-bold">{credits?.length}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Saques
+                    </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -111,16 +117,13 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+12,234</div>
-                    <p className="text-xs text-muted-foreground">
-                      +19% from last month
-                    </p>
+                    <div className="text-2xl font-bold">{debits}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Active Now
+                      Total de transações
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,38 +139,32 @@ export default function DashboardPage() {
                     </svg>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+573</div>
-                    <p className="text-xs text-muted-foreground">
-                      +201 since last hour
-                    </p>
+                    <div className="text-2xl font-bold">
+                      {account?.transactions?.length}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                  <CardHeader>
-                    <CardTitle>Overview</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pl-2">
-                    <Overview />
-                  </CardContent>
-                </Card>
                 <Card className="col-span-3">
                   <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
-                    <CardDescription>
-                      You made 265 sales this month.
-                    </CardDescription>
+                    <CardTitle>Transações</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <RecentSales />
+                    <Transactions transactions={account?.transactions?.reverse()} />
                   </CardContent>
                 </Card>
               </div>
             </TabsContent>
           </Tabs>
-        </div> */}
+        </div>
       </div>
     </>
   );
+}
+function useSWR(
+  arg0: string,
+  fetcher: any
+): { data: any; error: any; isLoading: any } {
+  throw new Error("Function not implemented.");
 }

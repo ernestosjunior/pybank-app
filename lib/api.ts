@@ -10,7 +10,7 @@ export const fetcher = axios.create({
   },
 });
 
-export async function getAPIClient(token?: string) {
+export async function getAPIClient() {
   const session: any = await getSession();
   fetcher.interceptors.request.use((config) => {
     return config;
@@ -19,7 +19,7 @@ export async function getAPIClient(token?: string) {
   if (session) {
     fetcher.defaults.headers[
       "Authorization"
-    ] = `Bearer ${session.user.access_token}`;
+    ] = `Bearer ${session.access_token}`;
   }
 
   return fetcher;

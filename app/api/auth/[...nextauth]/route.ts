@@ -27,7 +27,7 @@ const nextAuthOptions: NextAuthOptions = {
 
           return null;
         } catch (error) {
-          console.log(error);
+          console.log((error as Error)?.message);
         }
       },
     }),
