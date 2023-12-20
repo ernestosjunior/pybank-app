@@ -1,5 +1,5 @@
+import { AuthForm } from "@/components/auth-form";
 import { Metadata } from "next";
-import { AuthForm } from "./components/auth-form";
 
 export const metadata: Metadata = {
   title: "PyBank | Login",

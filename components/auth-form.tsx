@@ -1,26 +1,42 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { signIn } from "next-auth/react";
+import { PulseLoader } from "react-spinners";
 
 interface AuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function AuthForm({ className, ...props }: AuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const router = useRouter()
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
     const formData = new FormData(event.currentTarget as HTMLFormElement);
-    console.log(formData.get("email"))
 
-    setTimeout(() => {
+    try {
+      const result = await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirect: false
+      });
+
+      if (result?.error) {
+        return console.log(result?.error);
+      }
+
+      router.replace("/")
+    } catch (error) {
+    } finally {
       setIsLoading(false);
-    }, 3000);
+    }
   }
 
   return (
@@ -55,7 +71,9 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
               disabled={isLoading}
             />
           </div>
-          <Button disabled={isLoading}>Entrar</Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? <PulseLoader color="#ffffff" size={8} /> : "Entrar"}
+          </Button>
         </div>
       </form>
     </div>
